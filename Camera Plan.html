@@ -1,110 +1,143 @@
+
 <!DOCTYPE html>
-<html lang="ar" dir="ltr">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8" />
-    <title>Stadium Camera Planner Pro (13 Icons)</title>
+    <title>Stadium Camera Planner</title>
     <style>
-        /* --- التصميم العام --- */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #eef2f3; padding: 20px; margin: 0; color: #333; }
-        h1 { text-align: center; margin-bottom: 20px; color: #2c3e50; font-size: 24px; }
+    /* --- General Styles --- */
+    body { font-family: sans-serif; background: #f4f4f4; padding: 20px; margin: 0; }
+    
+    .main-header { text-align: center; margin-bottom: 20px; }
+    #displayTitle { margin: 0; color: #333; font-size: 2.2em; text-transform: uppercase; }
+    #displayDateTime { margin: 5px 0; color: #666; font-size: 1.2em; font-weight: bold; }
+    
+    .header-inputs {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 15px;
+        background: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .header-inputs input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+    
+    .controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+    button { padding: 8px 16px; cursor: pointer; background: white; border: 1px solid #ccc; border-radius: 4px; font-weight: bold; }
+    button:hover { background: #eee; }
+    #addBtn { background: #28a745; color: white; border: none; }
+    
+    .workspace { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+
+    #pitch-container {
+        position: relative;
+        width: 1000px;
+        max-width: 95vw;
+        aspect-ratio: 16/9;
+        background-image: url('pitch.jpg'); 
+        background-color: #2e7d32; 
+        background-size: cover;
+        background-position: center;
+        border: 2px solid #444;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .cam-icon {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        cursor: grab;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+    }
+
+    .cam-num {
+        position: absolute; top: -5px; right: -5px;
+        background: red; color: white; font-size: 10px;
+        width: 18px; height: 18px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        border: 1px solid white; font-weight: bold;
+        z-index: 15;
+    }
+
+    .table-box { width: 1000px; max-width: 95vw; background: white; padding: 10px; border-radius: 8px; overflow-x: auto; margin-bottom: 50px;}
+    table { width: 100%; border-collapse: collapse; min-width: 600px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    th { background: #f8f9fa; }
+    tr.active-row { background: #e6f7ff; }
+    input, select { width: 100%; padding: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 3px; }
+
+    /* --- PRINT STYLES --- */
+    @media print {
+        /* Hide UI elements that shouldn't be on paper */
+        .controls, .header-inputs, button, .delete-col { 
+            display: none !important; 
+        }
         
-        /* شريط الأزرار */
-        .controls { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
-        button { 
-            padding: 10px 20px; cursor: pointer; background: white; border: 1px solid #ccc; 
-            border-radius: 6px; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.2s;
-            display: flex; align-items: center; gap: 8px;
-        }
-        button:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        #addBtn { background: #27ae60; color: white; border: none; }
-        #printBtn { background: #2980b9; color: white; border: none; }
-        #clearBtn { background: #c0392b; color: white; border: none; }
+        body { padding: 0; background: white; }
         
-        .workspace { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        .workspace { gap: 10px; }
 
-        /* --- منطقة الملعب --- */
-        #pitch-container {
-            position: relative;
-            width: 1000px;
-            max-width: 95vw;
-            aspect-ratio: 16/9;
-            background-image: url('pitch.jpg'); /* الصورة الخلفية للملعب */
-            background-size: cover;
-            background-position: center;
-            border: 4px solid #fff;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            overflow: hidden; 
-            background-color: #4CAF50;
+        #pitch-container { 
+            border: 1px solid #000; 
+            box-shadow: none; 
+            width: 100%; 
+            /* Ensure background images print in Chrome/Safari */
+            -webkit-print-color-adjust: exact; 
+            print-color-adjust: exact;
         }
 
-        /* --- تصميم الأيقونات --- */
-        .cam-icon {
-            position: absolute;
-            width: 60px;  /* حجم الأيقونة */
-            height: 60px;
-            background-size: cover; 
-            background-position: center;
-            background-repeat: no-repeat;
-            border-radius: 50%;
-            border: 2px solid #fff;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            cursor: grab;
-            transform: translate(-50%, -50%);
-            z-index: 10;
-            background-color: white; 
-            transition: transform 0.1s, border-color 0.2s;
+        .table-box { 
+            width: 100%; 
+            box-shadow: none; 
+            margin-bottom: 0;
+            padding: 0;
         }
 
-        .cam-icon:hover { z-index: 110; transform: translate(-50%, -50%) scale(1.05); }
-        .cam-icon.selected { border-color: #e74c3c; box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.4); z-index: 100; }
-        .cam-icon:active { cursor: grabbing; transform: translate(-50%, -50%) scale(1.1); }
-
-        /* رقم الكاميرا الأحمر الصغير */
-        .cam-num {
-            position: absolute; top: -5px; right: -5px;
-            background: #e74c3c; color: white; font-size: 12px;
-            width: 22px; height: 22px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            border: 2px solid white; font-weight: bold;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        table { 
+            font-size: 12px; /* Smaller font to fit more info */
+            border: 1px solid #000;
         }
 
-        /* --- الجدول --- */
-        .table-box { width: 1000px; max-width: 95vw; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 750px; }
-        th, td { border-bottom: 1px solid #eee; padding: 12px; text-align: left; vertical-align: middle; }
-        th { background: #f8f9fa; color: #7f8c8d; font-weight: 700; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
-        tr:hover { background: #f1f8e9; }
-        tr.active-row { background: #e3f2fd; }
-        
-        input, select { 
-            width: 100%; padding: 8px 12px; box-sizing: border-box; 
-            border: 1px solid #ddd; border-radius: 6px; background: #fafafa; font-size: 13px;
+        /* Replace inputs with plain text appearance for printing */
+        input, select {
+            border: none;
+            background: transparent;
+            appearance: none;
+            -webkit-appearance: none;
         }
-        input:focus, select:focus { border-color: #3498db; background: white; outline: none; box-shadow: 0 0 0 2px rgba(52,152,219,0.2); }
 
-        /* زر الحذف في الجدول */
-        .del-btn { background: transparent; border: none; color: #e74c3c; font-size: 16px; cursor: pointer; padding: 5px; border-radius: 4px; }
-        .del-btn:hover { background: #ffebee; }
-
-        /* الطباعة */
-        @media print {
-            .controls, .table-box { display: none; }
-            #pitch-container { border: none; box-shadow: none; width: 100%; height: 100vh; transform: rotate(90deg); transform-origin: center; page-break-after: always; }
-            body { background: white; margin: 0; padding: 0; }
+        /* Hide the "Delete" column header and cells */
+        th:last-child, td:last-child {
+            display: none;
         }
-    </style>
+    }
+</style>
 </head>
 <body>
 
-    <h1>🎥 Stadium Camera Planner</h1>
+    <header class="main-header">
+        <h1 id="displayTitle">STADIUM CAMERA PLANNER</h1>
+        <p id="displayDateTime">DATE: --/--/---- | TIME: --:--</p>
+    </header>
+
+    <div class="header-inputs">
+        <input type="text" id="matchTitle" placeholder="Match Name (e.g. Final Cup)" oninput="updateHeader()">
+        <input type="date" id="matchDate" oninput="updateHeader()">
+        <input type="time" id="matchTime" oninput="updateHeader()">
+    </div>
 
     <div class="controls">
-        <button id="addBtn" onclick="addCam()">➕ Add Camera</button>
+        <button id="addBtn" onclick="addCam()">+ Add Camera</button>
         <button onclick="saveData()">💾 Save Plan</button>
-        <button id="printBtn" onclick="window.print()">🖨️ Print Layout</button>
-        <button id="clearBtn" onclick="clearAll()">🗑️ Reset All</button>
+        <button onclick="window.print()">🖨️ Print</button>
+        <button onclick="clearAll()" style="color:red;">✖ Reset All</button>
     </div>
 
     <div class="workspace">
@@ -117,10 +150,10 @@
                     <tr>
                         <th width="5%">#</th>
                         <th width="20%">Icon Type</th>
-                        <th width="20%">Camera Name</th>
+                        <th width="20%">Name</th>
                         <th width="10%">Lens</th>
                         <th width="35%">Location / Notes</th>
-                        <th width="10%">Action</th>
+                        <th width="10%">Delete</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody"></tbody>
@@ -135,90 +168,112 @@
         let selectedId = null;
         let draggedId = null;
 
-        // --- تعريف الأيقونات وربطها بالصور (تأكد من مطابقة أسماء الملفات) ---
+        // UPDATED: Added 'img' property to define the filename for each type
+        // Make sure your PNG files match these names exactly!
         const CAM_TYPES = [
-            { id: 'cam_main',    name: 'Main Camera',       lens: '86x',  img: '2.jpg' },
-            { id: 'cam_tight',   name: 'Tight / Zoom',      lens: '100x', img: '11.jpg' }, // تم التحديث
-            { id: 'cam_hbg',     name: 'High Behind Goal',  lens: '86x',  img: '12.jpg' }, // تم التحديث
-            { id: 'cam_lbg',     name: 'Low Behind Goal',   lens: 'Wide', img: '1.jpg' },
-            
-            { id: 'cam_rev',     name: 'Reverse Angle',     lens: '86x',  img: '7.jpg' },
-            { id: 'cam_18yd',    name: '18-Yard Box',       lens: '22x',  img: '8.jpg' },
-            { id: 'cam_close',   name: 'Close Up / Face',   lens: 'Long', img: '9.jpg' },  // تم التحديث
-            { id: 'cam_rf',      name: 'Wireless RF',       lens: 'Std',  img: '10.jpg' }, // تم التحديث
-
-            { id: 'cam_steady',  name: 'Steadicam',         lens: 'Wide', img: '6.jpg' },
-            { id: 'cam_hh',      name: 'Handheld',          lens: 'Std',  img: '5.jpg' },
-            { id: 'cam_beauty',  name: 'Beauty Shot',       lens: 'Wide', img: '4.jpg' },
-            { id: 'cam_drone',   name: 'Drone',             lens: 'Wide', img: '3.jpg' },
-            { id: 'cam_extra',   name: 'Extra / VIP',       lens: 'Std',  img: '13.jpg' }  // تم التحديث
+            { id: 'type-main',   name: 'Main Camera',       lens: '86x',  img: '2.png' },
+            { id: 'type-tight',  name: 'Tight / Zoom',      lens: '100x', img: '11.png' },
+            { id: 'type-hbg',    name: 'High Behind Goal',  lens: '86x',  img: '12.png' },
+            { id: 'type-lbg',    name: 'Low Behind Goal',   lens: 'Wide', img: '1.png' },
+            { id: 'type-rev',    name: 'Reverse Angle',     lens: '86x',  img: '7.png' },
+            { id: 'type-18yd',   name: '18-Yard Box',       lens: '22x',  img: '8.png' },
+            { id: 'type-close',  name: 'Close Up / Face',   lens: 'Long', img: '9.png' },
+            { id: 'type-rf',     name: 'Wireless RF',       lens: 'Std',  img: '10.png' },
+            { id: 'type-steady', name: 'Steadicam',         lens: 'Wide', img: '6.png' },
+            { id: 'type-hh',     name: 'Handheld',          lens: 'Std',  img: '5.png' },
+            { id: 'type-beauty', name: 'Beauty Shot',       lens: 'Wide', img: '4.png' },
+            { id: 'type-drone',  name: 'Drone',             lens: 'Wide', img: '3.png' }
         ];
 
-        // --- تحميل البيانات ---
+        function updateHeader() {
+            const title = document.getElementById('matchTitle').value;
+            const date = document.getElementById('matchDate').value;
+            const time = document.getElementById('matchTime').value;
+
+            document.getElementById('displayTitle').innerText = title || "STADIUM CAMERA PLANNER";
+            document.getElementById('displayDateTime').innerText = `DATE: ${date || '--/--/----'} | TIME: ${time || '--:--'}`;
+        }
+
         function loadData() {
-            const data = localStorage.getItem('camPlanFinal13');
-            if(data) {
-                cameras = JSON.parse(data);
+            const camData = localStorage.getItem('camPlan12');
+            const headerData = localStorage.getItem('camPlanHeader');
+
+            if(camData) {
+                cameras = JSON.parse(camData);
                 render();
             } else {
-                // الكاميرات الافتراضية عند أول تشغيل
-                addCam('cam_main', 50, 90);
-                addCam('cam_rev', 50, 10);
+                addCam('type-main', 50, 90);
+            }
+
+            if(headerData) {
+                const parsed = JSON.parse(headerData);
+                document.getElementById('matchTitle').value = parsed.title || '';
+                document.getElementById('matchDate').value = parsed.date || '';
+                document.getElementById('matchTime').value = parsed.time || '';
+                updateHeader();
             }
         }
 
-        function saveData() { localStorage.setItem('camPlanFinal13', JSON.stringify(cameras)); }
+        function saveData() {
+            const headerInfo = {
+                title: document.getElementById('matchTitle').value,
+                date: document.getElementById('matchDate').value,
+                time: document.getElementById('matchTime').value
+            };
+            localStorage.setItem('camPlan12', JSON.stringify(cameras));
+            localStorage.setItem('camPlanHeader', JSON.stringify(headerInfo));
+            alert("Plan Saved!");
+        }
 
-        // --- إضافة وحذف ---
-        function addCam(typeId = 'cam_main', x = 50, y = 50) {
+        function addCam(type = 'type-main', x = 50, y = 50) {
             const id = Date.now().toString();
-            const typeInfo = CAM_TYPES.find(t => t.id === typeId) || CAM_TYPES[0];
-            
-            cameras.push({
-                id: id,
-                typeId: typeId,
-                name: typeInfo.name,
-                lens: typeInfo.lens,
-                loc: '',
-                x: x, 
-                y: y
-            });
+            const typeInfo = CAM_TYPES.find(t => t.id === type) || CAM_TYPES[0];
+            cameras.push({ id, type, name: typeInfo.name, lens: typeInfo.lens, loc: '', x, y });
             render();
-            saveData();
         }
 
         function deleteCam(id) {
-            if(confirm('هل أنت متأكد من حذف هذه الكاميرا؟')) {
+            if(confirm('Delete this camera?')) {
                 cameras = cameras.filter(c => c.id !== id);
                 render();
-                saveData();
             }
         }
 
         function clearAll() {
-            if(confirm('هل أنت متأكد من مسح جميع الكاميرات؟')) {
+            if(confirm('Clear entire plan?')) {
                 cameras = [];
+                document.getElementById('matchTitle').value = '';
+                document.getElementById('matchDate').value = '';
+                document.getElementById('matchTime').value = '';
+                updateHeader();
                 render();
-                saveData();
+                localStorage.clear();
             }
         }
 
-        // --- الرسم (Render) ---
         function render() {
             pitch.innerHTML = '';
             tbody.innerHTML = '';
 
             cameras.forEach((cam, index) => {
-                const typeInfo = CAM_TYPES.find(t => t.id === cam.typeId) || CAM_TYPES[0];
-
-                // 1. إنشاء الأيقونة
+                const typeInfo = CAM_TYPES.find(t => t.id === cam.type);
+                
+                // --- RENDER ICON ON PITCH ---
                 const el = document.createElement('div');
-                el.className = 'cam-icon';
-                if(cam.id === selectedId) el.classList.add('selected');
-                el.style.backgroundImage = `url('${typeInfo.img}')`;
+                el.className = 'cam-icon'; // Base class only
+                
+                // Set the specific PNG image for this camera type
+                if(typeInfo) {
+                    el.style.backgroundImage = `url('${typeInfo.img}')`;
+                }
+
+                if(cam.id === selectedId) {
+                    el.style.border = "2px solid white"; // Simple highlight
+                    el.style.borderRadius = "50%";
+                }
+
                 el.style.left = cam.x + '%';
                 el.style.top = cam.y + '%';
-                el.title = `${cam.name} (${typeInfo.name})`;
                 
                 const num = document.createElement('div');
                 num.className = 'cam-num';
@@ -228,32 +283,27 @@
                 el.onmousedown = (e) => startDrag(e, cam.id);
                 pitch.appendChild(el);
 
-                // 2. إنشاء صف الجدول
+                // --- RENDER TABLE ROW ---
                 const tr = document.createElement('tr');
                 if(cam.id === selectedId) tr.classList.add('active-row');
                 
-                let options = '';
-                CAM_TYPES.forEach(t => {
-                    options += `<option value="${t.id}" ${t.id === cam.typeId ? 'selected' : ''}>${t.name}</option>`;
-                });
+                let typeOptions = CAM_TYPES.map(t => `<option value="${t.id}" ${t.id === cam.type ? 'selected' : ''}>${t.name}</option>`).join('');
 
                 tr.innerHTML = `
-                    <td><strong>${index + 1}</strong></td>
-                    <td><select onchange="updateCam('${cam.id}', 'typeId', this.value)">${options}</select></td>
-                    <td><input value="${cam.name}" oninput="updateCam('${cam.id}', 'name', this.value)" placeholder="مثال: الكاميرا الرئيسية"></td>
-                    <td><input value="${cam.lens}" oninput="updateCam('${cam.id}', 'lens', this.value)" placeholder="مثال: 86x"></td>
-                    <td><input value="${cam.loc}" oninput="updateCam('${cam.id}', 'loc', this.value)" placeholder="مثال: المنصة الرئيسية"></td>
-                    <td style="text-align:center;"><button class="del-btn" onclick="deleteCam('${cam.id}')">🗑</button></td>
+                    <td>${index + 1}</td>
+                    <td><select onchange="updateCam('${cam.id}', 'type', this.value)">${typeOptions}</select></td>
+                    <td><input value="${cam.name}" oninput="updateCam('${cam.id}', 'name', this.value)"></td>
+                    <td><input value="${cam.lens}" oninput="updateCam('${cam.id}', 'lens', this.value)"></td>
+                    <td><input value="${cam.loc}" oninput="updateCam('${cam.id}', 'loc', this.value)"></td>
+                    <td><button onclick="deleteCam('${cam.id}')" style="color:red;">🗑</button></td>
                 `;
                 
                 tr.onclick = (e) => {
-                    // منع تحديد الكاميرا عند النقر على المدخلات
-                    if(!['INPUT','SELECT','BUTTON'].includes(e.target.tagName)) {
+                    if(!['INPUT', 'SELECT', 'BUTTON'].includes(e.target.tagName)) {
                         selectedId = cam.id;
                         render();
                     }
                 };
-                
                 tbody.appendChild(tr);
             });
         }
@@ -262,23 +312,21 @@
             const cam = cameras.find(c => c.id === id);
             if(cam) {
                 cam[field] = value;
-                // تحديث تلقائي للاسم والعدسة عند تغيير النوع
-                if(field === 'typeId') {
+                // If type changes, auto-update the Name and Lens defaults
+                if(field === 'type') {
                     const info = CAM_TYPES.find(t => t.id === value);
                     cam.name = info.name;
                     cam.lens = info.lens;
                 }
-                saveData();
                 render();
             }
         }
 
-        // --- السحب والإفلات (Drag & Drop) ---
         function startDrag(e, id) {
             e.preventDefault();
             selectedId = id;
             draggedId = id;
-            render(); // لتحديث التظليل
+            render();
             document.addEventListener('mousemove', onDrag);
             document.addEventListener('mouseup', stopDrag);
         }
@@ -288,16 +336,11 @@
             const rect = pitch.getBoundingClientRect();
             let x = ((e.clientX - rect.left) / rect.width) * 100;
             let y = ((e.clientY - rect.top) / rect.height) * 100;
-            
-            // حدود الملعب
             x = Math.max(0, Math.min(100, x));
             y = Math.max(0, Math.min(100, y));
-
             const cam = cameras.find(c => c.id === draggedId);
-            cam.x = x;
-            cam.y = y;
-            
-            // تحديث سريع (بدون إعادة رسم الجدول بالكامل) لتحسين الأداء
+            cam.x = x; cam.y = y;
+            // Update the element directly for smoother performance, but render works too
             render(); 
         }
 
@@ -305,12 +348,9 @@
             draggedId = null;
             document.removeEventListener('mousemove', onDrag);
             document.removeEventListener('mouseup', stopDrag);
-            saveData();
         }
 
-        // التشغيل
         loadData();
-
     </script>
 </body>
 </html>
